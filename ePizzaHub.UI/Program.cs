@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 namespace ePizzaHub.UI
 {
     public class Program
@@ -5,12 +7,40 @@ namespace ePizzaHub.UI
         public static void Main(string[] args)
         {
 
-
-
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Login/Login";
+                    options.LogoutPath = "/Login/Signout";
+                });
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddHttpClient("ePizzaAPI", options =>
+            {
+                options.BaseAddress = new Uri(builder.Configuration["EPizzaAPI:Url"]!);
+                options.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+            #region -- In case of an Other services to consumes --
+            //builder.Services.AddHttpClient("ePizzaAPI_1", options =>
+            //{
+            //    options.BaseAddress = new Uri(builder.Configuration["EPizzaAPI:Url"]!);
+            //    options.DefaultRequestHeaders.Add("Accept", "application/json");
+            //});
+
+            //builder.Services.AddHttpClient("ePizzaAPI_2", options =>
+            //{
+            //    options.BaseAddress = new Uri(builder.Configuration["EPizzaAPI:Url"]!);
+            //    options.DefaultRequestHeaders.Add("Accept", "application/json");
+            //});
+
+            #endregion
 
             var app = builder.Build();
 
@@ -28,6 +58,7 @@ namespace ePizzaHub.UI
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.MapControllerRoute(
                 name: "default",
