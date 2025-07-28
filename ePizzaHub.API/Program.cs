@@ -1,4 +1,5 @@
 
+using ePizzaHub.API.Middleware;
 using ePizzaHub.Core.Concrete;
 using ePizzaHub.Core.Contracts;
 using ePizzaHub.Infrastructure.Models;
@@ -30,10 +31,15 @@ namespace ePizzaHub.API
 
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddTransient<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IItemRepository, ItemRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+
 
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IAuthService, AuthService>();
+            builder.Services.AddTransient<IItemService, ItemService>();
+            builder.Services.AddTransient<ICartService, CartService>();
 
 
 
@@ -50,6 +56,8 @@ namespace ePizzaHub.API
 
             app.UseAuthorization();
 
+            app.UseMiddleware<CommonResponseMiddleware>();
+            //app.UseMiddleware<SecondMiddleware>();            
 
             app.MapControllers();
 

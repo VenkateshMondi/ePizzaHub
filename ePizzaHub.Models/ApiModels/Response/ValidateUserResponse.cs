@@ -8,9 +8,10 @@ namespace ePizzaHub.Models.ApiModels.Response
 {
     public class ValidateUserResponse
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
+        //Use case of default ! -> just to supress the warning
+        public string Name { get; set; } = default!;
+        public string Email { get; set; } = default!;
         public int UserId { get; set; }
-        public List<string> Roles { get; set; }
+        public List<string> Roles { get; set; } = default!;
     }
 }
